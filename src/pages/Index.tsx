@@ -13,8 +13,11 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Index = () => {
+  const { t } = useLanguage();
+  
   const proximasReservas = mockReservas
     .filter(
       (r) =>
@@ -30,35 +33,32 @@ const Index = () => {
   };
 
   return (
-    <MainLayout title="Dashboard" subtitle="Visão geral da sua pousada">
+    <MainLayout title={t('dashboard.title')} subtitle={t('dashboard.subtitle')}>
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard
-          title="Reservas Hoje"
-          value={dashboardStats.reservasHoje}
-          icon={<Calendar size={24} />}
-          variant="primary"
-          description="Em andamento"
-        />
-        <StatCard
-          title="Check-ins Hoje"
+          title={t('dashboard.todayCheckins')}
           value={dashboardStats.checkInsHoje}
           icon={<ArrowUpRight size={24} />}
           variant="success"
-          description="Chegadas previstas"
         />
         <StatCard
-          title="Check-outs Hoje"
+          title={t('dashboard.todayCheckouts')}
           value={dashboardStats.checkOutsHoje}
           icon={<ArrowDownRight size={24} />}
           variant="warning"
-          description="Saídas previstas"
         />
         <StatCard
-          title="Taxa de Ocupação"
+          title={t('dashboard.occupancyRate')}
           value={`${dashboardStats.ocupacao}%`}
           icon={<TrendingUp size={24} />}
           trend={{ value: 12, isPositive: true }}
+        />
+        <StatCard
+          title={t('dashboard.monthlyRevenue')}
+          value={formatCurrency(dashboardStats.receitaMes)}
+          icon={<DollarSign size={24} />}
+          variant="primary"
         />
       </div>
 
@@ -67,10 +67,10 @@ const Index = () => {
         {/* Próximas Reservas */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Próximas Reservas</h2>
+            <h2 className="text-lg font-semibold">{t('dashboard.recentReservations')}</h2>
             <Link to="/reservas">
               <Button variant="outline" size="sm">
-                Ver todas
+                {t('dashboard.viewAll')}
               </Button>
             </Link>
           </div>
@@ -83,12 +83,12 @@ const Index = () => {
 
         {/* Resumo Financeiro */}
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Resumo Financeiro</h2>
+          <h2 className="text-lg font-semibold">{t('dashboard.monthlyRevenue')}</h2>
           <Card>
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
                 <DollarSign size={18} className="text-primary" />
-                Receita do Mês
+                {t('dashboard.monthlyRevenue')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -97,13 +97,13 @@ const Index = () => {
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Confirmados</span>
+                  <span className="text-muted-foreground">{t('status.confirmed')}</span>
                   <span className="font-medium">
                     {formatCurrency(8500)}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Pendentes</span>
+                  <span className="text-muted-foreground">{t('status.pending')}</span>
                   <span className="font-medium">{formatCurrency(4000)}</span>
                 </div>
               </div>
@@ -120,17 +120,17 @@ const Index = () => {
             <CardContent className="space-y-2">
               <Link to="/reservas/nova" className="block">
                 <Button className="w-full" variant="default">
-                  Nova Reserva
+                  {t('reservations.newReservation')}
                 </Button>
               </Link>
               <Link to="/hospedes/novo" className="block">
                 <Button className="w-full" variant="outline">
-                  Novo Hóspede
+                  {t('guests.newGuest')}
                 </Button>
               </Link>
               <Link to="/importar" className="block">
                 <Button className="w-full" variant="secondary">
-                  Importar Booking
+                  {t('nav.import')} Booking
                 </Button>
               </Link>
             </CardContent>

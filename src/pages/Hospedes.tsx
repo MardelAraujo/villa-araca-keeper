@@ -7,9 +7,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Search, Plus, Mail, Phone, Calendar, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { ptBR, it } from 'date-fns/locale';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Hospedes = () => {
+  const { t, language } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredHospedes = mockHospedes.filter(
@@ -27,10 +29,12 @@ const Hospedes = () => {
     }).format(value);
   };
 
+  const dateLocale = language === 'it' ? it : ptBR;
+
   return (
     <MainLayout
-      title="Hóspedes"
-      subtitle={`${filteredHospedes.length} hóspedes cadastrados`}
+      title={t('guests.title')}
+      subtitle={t('guests.subtitle')}
     >
       {/* Search Bar */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -40,7 +44,7 @@ const Hospedes = () => {
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
           />
           <Input
-            placeholder="Buscar por nome, email ou telefone..."
+            placeholder={t('guests.search')}
             className="pl-10"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -49,7 +53,7 @@ const Hospedes = () => {
         <Link to="/hospedes/novo">
           <Button>
             <Plus size={18} className="mr-2" />
-            Novo Hóspede
+            {t('guests.newGuest')}
           </Button>
         </Link>
       </div>
@@ -93,9 +97,8 @@ const Hospedes = () => {
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Calendar size={14} />
                       <span>
-                        Desde{' '}
                         {format(new Date(hospede.data_criacao), 'MMM yyyy', {
-                          locale: ptBR,
+                          locale: dateLocale,
                         })}
                       </span>
                     </div>
@@ -105,8 +108,7 @@ const Hospedes = () => {
                     <div className="flex items-center gap-1 text-muted-foreground">
                       <User size={14} />
                       <span>
-                        {hospede.total_reservas || 0}{' '}
-                        {hospede.total_reservas === 1 ? 'reserva' : 'reservas'}
+                        {hospede.total_reservas || 0} {t('guests.reservations')}
                       </span>
                     </div>
                     <div className="font-medium text-card-foreground">
@@ -121,7 +123,7 @@ const Hospedes = () => {
       ) : (
         <div className="text-center py-12">
           <p className="text-muted-foreground">
-            Nenhum hóspede encontrado com os filtros aplicados.
+            {t('guests.noResults')}
           </p>
         </div>
       )}

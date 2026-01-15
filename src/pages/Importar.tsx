@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Upload, FileText, CheckCircle, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Importar = () => {
+  const { t } = useLanguage();
   const [isDragging, setIsDragging] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
@@ -36,8 +38,8 @@ const Importar = () => {
 
   return (
     <MainLayout
-      title="Importar Reservas"
-      subtitle="Importe reservas do Booking automaticamente"
+      title={t('import.title')}
+      subtitle={t('import.subtitle')}
     >
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Dropzone */}
@@ -45,7 +47,7 @@ const Importar = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Upload size={20} className="text-primary" />
-              Arrastar e Soltar
+              {t('import.dropzone')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -68,16 +70,13 @@ const Importar = () => {
                     className="mx-auto text-[hsl(var(--success))]"
                   />
                   <p className="font-medium text-card-foreground">
-                    Arquivo carregado
-                  </p>
-                  <p className="text-sm text-muted-foreground">
                     {uploadedFile.name}
                   </p>
                   <Button
                     variant="outline"
                     onClick={() => setUploadedFile(null)}
                   >
-                    Remover
+                    {t('common.delete')}
                   </Button>
                 </div>
               ) : (
@@ -87,10 +86,10 @@ const Importar = () => {
                     className="mx-auto text-muted-foreground"
                   />
                   <p className="font-medium text-card-foreground">
-                    Arraste o PDF ou e-mail do Booking aqui
+                    {t('import.dropzone')}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Ou clique para selecionar um arquivo
+                    {t('import.formats')}
                   </p>
                   <input
                     type="file"
@@ -105,7 +104,7 @@ const Importar = () => {
                       document.getElementById('file-upload')?.click()
                     }
                   >
-                    Selecionar Arquivo
+                    {t('common.view')}
                   </Button>
                 </div>
               )}
@@ -116,51 +115,19 @@ const Importar = () => {
         {/* Process Button */}
         {uploadedFile && (
           <Button className="w-full" size="lg">
-            Processar Reserva
+            {t('common.save')}
           </Button>
         )}
 
-        {/* Instructions */}
+        {/* History */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Como funciona</CardTitle>
+            <CardTitle className="text-base">{t('import.history')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <ol className="space-y-3 text-sm text-muted-foreground">
-              <li className="flex items-start gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-medium">
-                  1
-                </span>
-                <span>
-                  Arraste o PDF de confirmação ou o e-mail do Booking para a
-                  área acima
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-medium">
-                  2
-                </span>
-                <span>
-                  O sistema irá extrair automaticamente: nome, e-mail, telefone,
-                  datas e valor
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-medium">
-                  3
-                </span>
-                <span>
-                  Se o hóspede já existir, a reserva será vinculada
-                  automaticamente
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-medium">
-                  4
-                </span>
-                <span>Revise os dados e confirme a importação</span>
-              </li>
-            </ol>
+            <p className="text-sm text-muted-foreground text-center py-8">
+              {t('import.noHistory')}
+            </p>
           </CardContent>
         </Card>
 
@@ -171,9 +138,7 @@ const Importar = () => {
             className="flex-shrink-0 text-[hsl(var(--warning))]"
           />
           <p className="text-sm text-muted-foreground">
-            <strong>Dica:</strong> Certifique-se de que o PDF ou e-mail contém
-            todas as informações da reserva. Arquivos parciais podem resultar em
-            dados incompletos.
+            <strong>Dica:</strong> {t('import.formats')}
           </p>
         </div>
       </div>
