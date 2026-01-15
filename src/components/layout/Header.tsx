@@ -1,6 +1,8 @@
 import { Bell, Search, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface HeaderProps {
   title: string;
@@ -8,6 +10,8 @@ interface HeaderProps {
 }
 
 export function Header({ title, subtitle }: HeaderProps) {
+  const { t } = useLanguage();
+
   return (
     <header className="flex items-center justify-between h-16 px-6 bg-card border-b border-border">
       <div>
@@ -25,10 +29,13 @@ export function Header({ title, subtitle }: HeaderProps) {
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
           />
           <Input
-            placeholder="Buscar..."
+            placeholder={t('common.search')}
             className="w-64 pl-10 bg-background"
           />
         </div>
+
+        {/* Language Switcher */}
+        <LanguageSwitcher />
 
         {/* Notifications */}
         <Button variant="ghost" size="icon" className="relative">

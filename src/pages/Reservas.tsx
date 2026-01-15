@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { ReservaCard } from '@/components/reservas/ReservaCard';
 import { mockReservas } from '@/data/mock';
-import { StatusReserva, statusReservaLabels } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -15,8 +14,10 @@ import {
 import { Search, Plus, Filter, Grid3X3, List } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Reservas = () => {
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('todas');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -36,10 +37,19 @@ const Reservas = () => {
     return matchesSearch && matchesStatus;
   });
 
+  const statusOptions = [
+    { value: 'todas', label: t('reservations.all') },
+    { value: 'solicitacao', label: t('reservations.request') },
+    { value: 'confirmada', label: t('reservations.confirmed') },
+    { value: 'em_andamento', label: t('reservations.inProgress') },
+    { value: 'finalizada', label: t('reservations.finished') },
+    { value: 'cancelada', label: t('reservations.canceled') },
+  ];
+
   return (
     <MainLayout
-      title="Reservas"
-      subtitle={`${filteredReservas.length} reservas encontradas`}
+      title={t('reservations.title')}
+      subtitle={t('reservations.subtitle')}
     >
       {/* Filters Bar */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -49,7 +59,7 @@ const Reservas = () => {
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
           />
           <Input
-            placeholder="Buscar por nome ou código..."
+            placeholder={t('reservations.search')}
             className="pl-10"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -59,13 +69,12 @@ const Reservas = () => {
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-[180px]">
               <Filter size={16} className="mr-2" />
-              <SelectValue placeholder="Filtrar status" />
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="todas">Todas</SelectItem>
-              {Object.entries(statusReservaLabels).map(([value, label]) => (
-                <SelectItem key={value} value={value}>
-                  {label}
+              {statusOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -93,7 +102,7 @@ const Reservas = () => {
           <Link to="/reservas/nova">
             <Button>
               <Plus size={18} className="mr-2" />
-              Nova Reserva
+              {t('reservations.newReservation')}
             </Button>
           </Link>
         </div>
@@ -116,7 +125,7 @@ const Reservas = () => {
       ) : (
         <div className="text-center py-12">
           <p className="text-muted-foreground">
-            Nenhuma reserva encontrada com os filtros aplicados.
+            {t('reservations.noResults')}
           </p>
         </div>
       )}

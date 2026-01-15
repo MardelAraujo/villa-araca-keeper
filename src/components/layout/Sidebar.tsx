@@ -13,18 +13,20 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-
-const navigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Reservas', href: '/reservas', icon: Calendar },
-  { name: 'Hóspedes', href: '/hospedes', icon: Users },
-  { name: 'Importar', href: '/importar', icon: Upload },
-  { name: 'Documentos', href: '/documentos', icon: FileText },
-];
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export function Sidebar() {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+  const { t } = useLanguage();
+
+  const navigation = [
+    { name: t('nav.dashboard'), href: '/', icon: LayoutDashboard },
+    { name: t('nav.reservations'), href: '/reservas', icon: Calendar },
+    { name: t('nav.guests'), href: '/hospedes', icon: Users },
+    { name: t('nav.import'), href: '/importar', icon: Upload },
+    { name: t('nav.documents'), href: '/documentos', icon: FileText },
+  ];
 
   return (
     <div
@@ -59,7 +61,7 @@ export function Sidebar() {
 
           return (
             <Link
-              key={item.name}
+              key={item.href}
               to={item.href}
               className={cn(
                 'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
@@ -82,11 +84,11 @@ export function Sidebar() {
           className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
         >
           <Settings size={20} />
-          {!collapsed && <span>Configurações</span>}
+          {!collapsed && <span>{t('nav.settings')}</span>}
         </Link>
         <button className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent transition-colors">
           <LogOut size={20} />
-          {!collapsed && <span>Sair</span>}
+          {!collapsed && <span>{t('nav.logout')}</span>}
         </button>
       </div>
     </div>

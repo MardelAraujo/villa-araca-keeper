@@ -171,6 +171,42 @@ export const mockDocumentos: DocumentoLancamento[] = [
     valor: 45,
     data_registro: new Date('2025-01-19'),
   },
+  {
+    id: '5',
+    id_reserva: '5',
+    tipo_documento: 'contrato_assinado',
+    descricao: 'Contrato de hospedagem assinado',
+    valor: 0,
+    arquivo_url: '/contratos/contrato-001.pdf',
+    arquivo_nome: 'contrato-001.pdf',
+    data_registro: new Date('2024-12-20'),
+  },
+  {
+    id: '6',
+    id_reserva: '5',
+    tipo_documento: 'consumo_restaurante',
+    descricao: 'Almoço de Natal',
+    valor: 280,
+    data_registro: new Date('2024-12-25'),
+  },
+  {
+    id: '7',
+    id_reserva: '4',
+    tipo_documento: 'comprovante_pagamento',
+    descricao: 'Pagamento via Airbnb',
+    valor: 1500,
+    data_registro: new Date('2025-01-09'),
+  },
+  {
+    id: '8',
+    id_reserva: '1',
+    tipo_documento: 'contrato_assinado',
+    descricao: 'Termo de responsabilidade',
+    valor: 0,
+    arquivo_url: '/contratos/termo-001.pdf',
+    arquivo_nome: 'termo-001.pdf',
+    data_registro: new Date('2025-01-12'),
+  },
 ];
 
 // Estatísticas para o dashboard
