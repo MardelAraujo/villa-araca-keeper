@@ -14,7 +14,189 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      documentos: {
+        Row: {
+          arquivo_url: string | null
+          created_at: string
+          hospede_id: string
+          id: string
+          numero_documento: string | null
+          reserva_id: string | null
+          tipo_documento: string
+        }
+        Insert: {
+          arquivo_url?: string | null
+          created_at?: string
+          hospede_id: string
+          id?: string
+          numero_documento?: string | null
+          reserva_id?: string | null
+          tipo_documento: string
+        }
+        Update: {
+          arquivo_url?: string | null
+          created_at?: string
+          hospede_id?: string
+          id?: string
+          numero_documento?: string | null
+          reserva_id?: string | null
+          tipo_documento?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentos_hospede_id_fkey"
+            columns: ["hospede_id"]
+            isOneToOne: false
+            referencedRelation: "hospedes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentos_reserva_id_fkey"
+            columns: ["reserva_id"]
+            isOneToOne: false
+            referencedRelation: "reservas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hospedes: {
+        Row: {
+          cidade: string | null
+          cpf: string | null
+          created_at: string
+          email: string | null
+          endereco: string | null
+          estado: string | null
+          id: string
+          nome: string
+          observacoes: string | null
+          pais: string | null
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          cidade?: string | null
+          cpf?: string | null
+          created_at?: string
+          email?: string | null
+          endereco?: string | null
+          estado?: string | null
+          id?: string
+          nome: string
+          observacoes?: string | null
+          pais?: string | null
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cidade?: string | null
+          cpf?: string | null
+          created_at?: string
+          email?: string | null
+          endereco?: string | null
+          estado?: string | null
+          id?: string
+          nome?: string
+          observacoes?: string | null
+          pais?: string | null
+          telefone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reservas: {
+        Row: {
+          codigo_booking: string | null
+          created_at: string
+          data_checkin: string
+          data_checkout: string
+          hospede_id: string
+          id: string
+          numero_hospedes: number | null
+          observacoes: string | null
+          percentual_pago: number | null
+          status: string
+          suite_id: string
+          updated_at: string
+          valor_pago: number | null
+          valor_pendente: number | null
+          valor_total: number | null
+        }
+        Insert: {
+          codigo_booking?: string | null
+          created_at?: string
+          data_checkin: string
+          data_checkout: string
+          hospede_id: string
+          id?: string
+          numero_hospedes?: number | null
+          observacoes?: string | null
+          percentual_pago?: number | null
+          status?: string
+          suite_id: string
+          updated_at?: string
+          valor_pago?: number | null
+          valor_pendente?: number | null
+          valor_total?: number | null
+        }
+        Update: {
+          codigo_booking?: string | null
+          created_at?: string
+          data_checkin?: string
+          data_checkout?: string
+          hospede_id?: string
+          id?: string
+          numero_hospedes?: number | null
+          observacoes?: string | null
+          percentual_pago?: number | null
+          status?: string
+          suite_id?: string
+          updated_at?: string
+          valor_pago?: number | null
+          valor_pendente?: number | null
+          valor_total?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservas_hospede_id_fkey"
+            columns: ["hospede_id"]
+            isOneToOne: false
+            referencedRelation: "hospedes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reservas_suite_id_fkey"
+            columns: ["suite_id"]
+            isOneToOne: false
+            referencedRelation: "suites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      suites: {
+        Row: {
+          cor_identificacao: string | null
+          created_at: string
+          id: string
+          nome: string
+          status: string
+        }
+        Insert: {
+          cor_identificacao?: string | null
+          created_at?: string
+          id?: string
+          nome: string
+          status?: string
+        }
+        Update: {
+          cor_identificacao?: string | null
+          created_at?: string
+          id?: string
+          nome?: string
+          status?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
