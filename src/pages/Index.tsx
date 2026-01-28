@@ -1,7 +1,9 @@
 import { MainLayout } from '@/components/layout/MainLayout';
 import { StatCard } from '@/components/dashboard/StatCard';
+import { SuitesOcupadasCard } from '@/components/dashboard/SuitesOcupadasCard';
 import { ReservaCard } from '@/components/reservas/ReservaCard';
 import { dashboardStats, mockReservas } from '@/data/mock';
+import { useSuitesOcupadas } from '@/hooks/useSuites';
 import {
   Calendar,
   Users,
@@ -17,6 +19,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 const Index = () => {
   const { t } = useLanguage();
+  const { data: suitesData, isLoading: loadingSuites } = useSuitesOcupadas();
   
   const proximasReservas = mockReservas
     .filter(
@@ -48,10 +51,10 @@ const Index = () => {
           icon={<ArrowDownRight size={24} />}
           variant="warning"
         />
-        <StatCard
-          title={t('dashboard.occupancyRate')}
-          value={`${dashboardStats.ocupacao}%`}
-          icon={<TrendingUp size={24} />}
+        <SuitesOcupadasCard
+          ocupadas={suitesData?.ocupadas ?? 0}
+          total={suitesData?.totalSuites ?? 6}
+          percentual={suitesData?.percentual ?? 0}
           trend={{ value: 12, isPositive: true }}
         />
         <StatCard

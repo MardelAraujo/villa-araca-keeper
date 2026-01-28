@@ -4,6 +4,8 @@ import { LayoutDashboard, Users, Calendar, FileText, Settings, LogOut, ChevronLe
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import logoVillaAraca from '@/assets/logo-villa-araca.png';
+
 export function Sidebar() {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
@@ -33,11 +35,16 @@ export function Sidebar() {
   }];
   return <div className={cn('flex flex-col bg-sidebar border-r border-sidebar-border transition-all duration-300', collapsed ? 'w-16' : 'w-64')}>
       {/* Logo */}
-      <div className="flex items-center justify-between h-16 px-4 border-b border-sidebar-border">
-        {!collapsed && <h1 className="text-xl font-bold text-sidebar-foreground">
-            Villa Araçá
-          </h1>}
-        <Button variant="ghost" size="icon" onClick={() => setCollapsed(!collapsed)} className="text-sidebar-foreground hover:bg-sidebar-accent">
+      <div className="flex items-center justify-between h-20 px-4 border-b border-sidebar-border">
+        {!collapsed && (
+          <div className="flex items-center gap-2">
+            <img src={logoVillaAraca} alt="Villa Araçá" className="h-12 w-auto" />
+          </div>
+        )}
+        {collapsed && (
+          <img src={logoVillaAraca} alt="Villa Araçá" className="h-8 w-auto mx-auto" />
+        )}
+        <Button variant="ghost" size="icon" onClick={() => setCollapsed(!collapsed)} className="text-sidebar-foreground hover:bg-sidebar-accent shrink-0">
           {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
         </Button>
       </div>
