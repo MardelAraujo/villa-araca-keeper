@@ -4,12 +4,12 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { DocumentUpload } from '@/components/documents/DocumentUpload';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -37,6 +37,14 @@ const guestFormSchema = z.object({
 
 type GuestFormData = z.infer<typeof guestFormSchema>;
 
+interface UploadedDocument {
+  id?: string;
+  tipo_documento: string;
+  numero_documento?: string;
+  arquivo_url: string;
+  file_name: string;
+}
+
 const brazilianStates = [
   'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
   'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
@@ -44,10 +52,32 @@ const brazilianStates = [
 ];
 
 const NovoHospede = () => {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [documents, setDocuments] = useState<UploadedDocument[]>([]);
+
+  // Document types for guests (ID documents only, NOT linked to reservations)
+  const guestDocumentTypes = language === 'pt'
+    ? [
+        { value: 'rg', label: 'RG' },
+        { value: 'cpf', label: 'CPF' },
+        { value: 'cnh', label: 'CNH' },
+        { value: 'passaporte', label: 'Passaporte' },
+        { value: 'comprovante_residencia', label: 'Comprovante de Residência' },
+        { value: 'certidao_nascimento', label: 'Certidão de Nascimento' },
+        { value: 'outros_identificacao', label: 'Outros Documentos de Identificação' },
+      ]
+    : [
+        { value: 'rg', label: 'Carta d\'Identità' },
+        { value: 'cpf', label: 'Codice Fiscale' },
+        { value: 'cnh', label: 'Patente' },
+        { value: 'passaporte', label: 'Passaporto' },
+        { value: 'comprovante_residencia', label: 'Prova di Residenza' },
+        { value: 'certidao_nascimento', label: 'Certificato di Nascita' },
+        { value: 'outros_identificacao', label: 'Altri Documenti di Identificazione' },
+      ];
 
   const form = useForm<GuestFormData>({
     resolver: zodResolver(guestFormSchema),
@@ -67,19 +97,43 @@ const NovoHospede = () => {
   const onSubmit = async (data: GuestFormData) => {
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from('hospedes').insert({
-        nome: data.nome,
-        cpf: data.cpf || null,
-        telefone: data.telefone || null,
-        email: data.email || null,
-        endereco: data.endereco || null,
-        cidade: data.cidade || null,
-        estado: data.estado || null,
-        pais: data.pais || 'Brasil',
-        observacoes: data.observacoes || null,
-      });
+      // Create guest
+      const { data: hospedeData, error: hospedeError } = await supabase
+        .from('hospedes')
+        .insert({
+          nome: data.nome,
+          cpf: data.cpf || null,
+          telefone: data.telefone || null,
+          email: data.email || null,
+          endereco: data.endereco || null,
+          cidade: data.cidade || null,
+          estado: data.estado || null,
+          pais: data.pais || 'Brasil',
+          observacoes: data.observacoes || null,
+        })
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (hospedeError) throw hospedeError;
+
+      // Create documents linked to guest ONLY (no reserva_id)
+      if (documents.length > 0) {
+        const documentInserts = documents.map((doc) => ({
+          hospede_id: hospedeData.id,
+          reserva_id: null, // Guest documents are NOT linked to reservations
+          tipo_documento: doc.tipo_documento,
+          numero_documento: doc.numero_documento || null,
+          arquivo_url: doc.arquivo_url,
+        }));
+
+        const { error: docsError } = await supabase
+          .from('documentos')
+          .insert(documentInserts);
+
+        if (docsError) {
+          console.error('Error saving documents:', docsError);
+        }
+      }
 
       toast({
         title: language === 'pt' ? 'Hóspede cadastrado!' : 'Ospite registrato!',
@@ -127,6 +181,8 @@ const NovoHospede = () => {
       countryPlaceholder: 'Digite o país',
       notes: 'Observações Internas',
       notesPlaceholder: 'Preferências, restrições alimentares, datas especiais...',
+      documents: 'Documentos de Identificação',
+      documentsDesc: 'RG, CPF, passaporte, comprovante de residência (vinculados ao hóspede)',
       back: 'Voltar',
       save: 'Salvar Hóspede',
       saving: 'Salvando...',
@@ -154,6 +210,8 @@ const NovoHospede = () => {
       countryPlaceholder: 'Inserisci il paese',
       notes: 'Note Interne',
       notesPlaceholder: 'Preferenze, restrizioni alimentari, date speciali...',
+      documents: 'Documenti di Identificazione',
+      documentsDesc: 'Carta d\'identità, passaporto, prova di residenza (collegati all\'ospite)',
       back: 'Indietro',
       save: 'Salva Ospite',
       saving: 'Salvataggio...',
@@ -315,6 +373,22 @@ const NovoHospede = () => {
                       <FormMessage />
                     </FormItem>
                   )}
+                />
+              </CardContent>
+            </Card>
+
+            {/* Documents Card - Guest ID Documents */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">{l.documents}</CardTitle>
+                <p className="text-sm text-muted-foreground">{l.documentsDesc}</p>
+              </CardHeader>
+              <CardContent>
+                <DocumentUpload
+                  documents={documents}
+                  onDocumentsChange={setDocuments}
+                  documentTypes={guestDocumentTypes}
+                  folder="hospedes"
                 />
               </CardContent>
             </Card>
