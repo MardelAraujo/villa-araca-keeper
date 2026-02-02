@@ -53,6 +53,20 @@ const presetThemes = [
     sidebarForeground: '0 0% 95%',
     accentColor: '45 90% 55%',
   },
+  {
+    name: 'Neon Escuro',
+    nameIt: 'Neon Scuro',
+    sidebarBackground: '0 0% 5%',
+    sidebarForeground: '0 0% 98%',
+    accentColor: '142 100% 50%',
+  },
+  {
+    name: 'Verde & Areia',
+    nameIt: 'Verde & Sabbia',
+    sidebarBackground: '152 35% 22%',
+    sidebarForeground: '38 35% 92%',
+    accentColor: '38 45% 72%',
+  },
 ];
 
 const Configuracoes = () => {
